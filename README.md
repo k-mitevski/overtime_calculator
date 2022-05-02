@@ -50,6 +50,12 @@ Total working days in May: 22, number of overtime hours 5.
 | Gross  |   152964 |        869 |             6518 |      159482 |
 ```
 
+## Executable CLI for windows
+Using auto-py-to-exe, an exe file is available from the CLI that works the same way.
+```
+overtime_cli.exe -s 30000 -o 5
+```
+
 # TODO
 - Fix rounding errors
 - Add option to choose a month
