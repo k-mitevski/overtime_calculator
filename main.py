@@ -12,7 +12,9 @@ working_days = len([x for x in calendar.itermonthdays2(time_now.year, time_now.m
 tax = 10
 tax_net = 11.11
 personal_release = 8788
+# total contributions (pension: 18.80%, medical 7.5%, employment 1.2%, insurance 0.5%)
 total_contributions = 28
+# percentage increase used to calculate from net to gross salary
 net_gross_tax = 38.8886366731738
 
 
@@ -21,8 +23,9 @@ net_gross_tax = 38.8886366731738
 @click.option('--overtime', '-o', type=int, help='Your total overtime hours', required=True)
 @click.option('--overtime-percentage', '-p', type=int, default=35, show_default=True,
               help='Overtime percentage increase')
-def overtime_calculator(salary, overtime, overtime_percentage) -> None:
+def overtime_calculator(salary: int, overtime: int, overtime_percentage: int) -> None:
     """CLI based calculator for estimating overtime compensation."""
+
     gross = net_to_gross(salary)
     net = salary
 
@@ -36,10 +39,11 @@ def overtime_calculator(salary, overtime, overtime_percentage) -> None:
     print(f'Calculating based on {overtime_percentage}% hourly increase.')
     print(f'Total working days in {time_now.strftime("%B")}: {working_days}, number of overtime hours {overtime}.')
     print('')
-    print(tabulate(
-        [['Net', net, net_per_hour, overtime_net, total_pay_net],
-         ['Gross', gross, gross_per_hour, total_overtime, total_pay_gross]],
-        headers=['Type', 'Salary', 'Per hour', 'Overtime total', 'Total Pay'], tablefmt='orgtbl'))
+    print(tabulate([
+            ['Net', net, net_per_hour, overtime_net, total_pay_net],
+            ['Gross', gross, gross_per_hour, total_overtime, total_pay_gross]],
+            headers=['Type', 'Salary', 'Per hour', 'Overtime total', 'Total Pay'],
+            tablefmt='orgtbl'))
 
 
 def net_to_gross(salary: int) -> float:
@@ -50,7 +54,7 @@ def net_to_gross(salary: int) -> float:
     return gross_salary
 
 
-def add_overtime_gross(net_salary: int, overtime_hours: int, overtime_percentage):
+def add_overtime_gross(net_salary: int, overtime_hours: int, overtime_percentage) -> tuple:
     gross_per_hour, _ = hourly_salary(net_salary)
     overtime_gross_per_hour = gross_per_hour + (gross_per_hour * overtime_percentage / 100)
     total_overtime_pay = overtime_gross_per_hour * overtime_hours
